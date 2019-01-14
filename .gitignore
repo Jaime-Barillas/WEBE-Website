@@ -1,0 +1,5 @@
+# Directories generated on a build.
+build/
+dist/
+
+nbproject/private/
