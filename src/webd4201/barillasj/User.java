@@ -435,8 +435,8 @@ public abstract class User implements CollegeInterface {
         boolean validName = false;
         
         try {
-            Integer.decode(nameToTest);
-        } catch (NumberFormatException ex) {
+            Double.parseDouble(nameToTest);
+        } catch (NullPointerException | NumberFormatException ex) {
             validName = true;
         }
         
