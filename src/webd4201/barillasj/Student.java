@@ -1,5 +1,6 @@
 package webd4201.barillasj;
 
+import java.sql.Connection;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Vector;
@@ -149,12 +150,12 @@ public class Student extends User {
      */
     public Student(long id, String password, String firstName, String lastName,
             String emailAddress, Date lastAccess, Date enrollDate,
-            boolean enabled, char type, String programCode,
+            char type, boolean enabled, String programCode,
             String programDescription, int year, Vector<Mark> marks)
             throws InvalidUserDataException {
         // Call the parent constructor
         super(id, password, firstName, lastName, emailAddress, lastAccess,
-                enrollDate, enabled, type);
+                enrollDate, type, enabled);
         // Avoids 'override-able method in constructor' warning.
         this.setAttributes(programCode, programDescription, year, marks);
     }
@@ -182,12 +183,12 @@ public class Student extends User {
      */
     public Student(long id, String password, String firstName, String lastName,
             String emailAddress, Date lastAccess, Date enrollDate,
-            boolean enabled, char type, String programCode,
+            char type, boolean enabled, String programCode,
             String programDescription, int year)
             throws InvalidUserDataException {
         // Call other constructor.
         this(id, password, firstName, lastName, emailAddress, lastAccess,
-                enrollDate, enabled, type, programCode, programDescription,
+                enrollDate, type, enabled, programCode, programDescription,
                 year, new Vector<Mark>());
     }
 
@@ -200,7 +201,7 @@ public class Student extends User {
         this(DEFAULT_ID, DEFAULT_PASSWORD, DEFAULT_FIRST_NAME,
                 DEFAULT_LAST_NAME, DEFAULT_EMAIL_ADDRESS,
                 Date.from(Instant.now()), Date.from(Instant.now()),
-                DEFAULT_ENABLED_STATUS, DEFAULT_TYPE, DEFAULT_PROGRAM_CODE,
+                DEFAULT_TYPE, DEFAULT_ENABLED_STATUS, DEFAULT_PROGRAM_CODE,
                 DEFAULT_PROGRAM_DESCRIPTION, DEFAULT_YEAR);
     }
 
@@ -226,6 +227,67 @@ public class Student extends User {
     }
 
     /**
+     * Initialize the database queries.
+     *
+     * @param dbConnection The database to use.
+     */
+    public static void initialize(Connection dbConnection) {
+        StudentDA.initialize(dbConnection);
+    }
+    
+    /**
+     * Close the database queries.
+     */
+    public static void terminate() {
+        StudentDA.terminate();
+    }
+    
+    /**
+     * Retrieve a student from the database.
+     *
+     * @param studentId (long) The student to retrieve.
+     * @return (Student) The requested student.
+     *
+     * @throws NotFoundException If the student does not exist within the
+     * database.
+     */
+    public static Student retrieve(long studentId) throws NotFoundException {
+        return StudentDA.retrieve(studentId);
+    }
+    
+    /**
+     * Add this student to the database.
+     *
+     * @return (boolean) true if the creation was successful, false otherwise.
+     * @throws DuplicateException If student already exists within the database.
+     */
+    public boolean create() throws DuplicateException {
+        return StudentDA.create(this);
+    }
+    
+    /**
+     * Update this student's info within the database.
+     *
+     * @return (int) The number of rows affected.
+     * @throws NotFoundException If the student does not exist within the
+     * database.
+     */
+    public int update() throws NotFoundException {
+        return StudentDA.update(this);
+    }
+    
+    /**
+     * Delete this student from the database.
+     *
+     * @return (int) The number of rows affected.
+     * @throws NotFoundException If the student does not exist within the
+     * database.
+     */
+    public int delete() throws NotFoundException {
+        return StudentDA.delete(this);
+    }
+    
+    /**
      * The human friendly name for this User type.
      *
      * @return
@@ -233,6 +295,13 @@ public class Student extends User {
     @Override
     public String getTypeForDisplay() {
         return "Student";
+    }
+    
+    /**
+     * Display this students info to the console.
+     */
+    public void displayToConsole() {
+        System.out.println(toString());
     }
 
     /**

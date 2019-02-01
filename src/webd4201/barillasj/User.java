@@ -342,12 +342,12 @@ public abstract class User implements CollegeInterface {
      */
     public User(long id, String password, String firstName, String lastName,
             String emailAddress, Date lastAccess, Date enrollDate,
-            boolean enabled, char type) throws InvalidUserDataException  {
+            char type, boolean enabled) throws InvalidUserDataException  {
         // Initialize attributes within a private method to avoid
         // "override-able method call" warning.
         try {
             this.setAttributes(id, password, firstName, lastName, emailAddress,
-                    lastAccess, enrollDate, enabled, type);
+                    lastAccess, enrollDate, type, enabled);
         } catch (InvalidIdException | InvalidPasswordException | InvalidNameException ex) {
             throw new InvalidUserDataException(ex.getMessage());
         }
@@ -362,7 +362,7 @@ public abstract class User implements CollegeInterface {
         this(DEFAULT_ID, DEFAULT_PASSWORD, DEFAULT_FIRST_NAME,
                 DEFAULT_LAST_NAME, DEFAULT_EMAIL_ADDRESS,
                 Date.from(Instant.now()), Date.from(Instant.now()),
-                DEFAULT_ENABLED_STATUS, DEFAULT_TYPE);
+                DEFAULT_TYPE, DEFAULT_ENABLED_STATUS);
     }
 
     //-------- Methods --------//
@@ -385,7 +385,7 @@ public abstract class User implements CollegeInterface {
      */
     private void setAttributes(long id, String password, String firstName,
             String lastName, String emailAddress, Date lastAccess,
-            Date enrollDate, boolean enabled, char type)
+            Date enrollDate, char type, boolean enabled)
             throws InvalidIdException, InvalidPasswordException, InvalidNameException {
         this.setId(id);
         this.setPassword(password);
@@ -427,13 +427,20 @@ public abstract class User implements CollegeInterface {
      * @return (boolean) true if the name is valid, false otherwise.
      */
     public static boolean verifyName(String nameToTest) {
-        /* Retrieved from here: https://stackoverflow.com/a/34253764
-         * Uses lambda expressions (Java8+ ?)
-         * TODO: Only works on positive integers, Change so it works on other
-         * numbers too.
+        /* When is a name a number? When is a number a name?
+         * If the whole name is a valid number then it will be a number, if it
+         * is not a valid number then it will be considered a valid name e.g.
+         * 123.56 is a number, but 123.26.4 is a name.
          */
-        return !nameToTest.trim().isEmpty()
-                && nameToTest.chars().allMatch(Character::isDigit);
+        boolean validName = false;
+        
+        try {
+            Integer.decode(nameToTest);
+        } catch (NumberFormatException ex) {
+            validName = true;
+        }
+        
+        return validName;
     }
 
     /**

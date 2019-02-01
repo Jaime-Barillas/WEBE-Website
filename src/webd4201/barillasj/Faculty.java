@@ -149,12 +149,12 @@ public class Faculty extends User {
      */
     public Faculty(long id, String password, String firstName, String lastName,
             String emailAddress, Date lastAccess, Date enrollDate,
-            boolean enabled, char type, String schoolCode,
+            char type, boolean enabled, String schoolCode,
             String schoolDescription, String office, int extension)
             throws InvalidUserDataException {
         // Initialize attributes that belong to the superclass.
         super(id, password, firstName, lastName, emailAddress, lastAccess,
-                enrollDate, enabled, type);
+                enrollDate, type, enabled);
 
         // Initialize the rest of the attributes within a private method to
         // avoid "override-able method call in constructor" warning.
@@ -171,7 +171,7 @@ public class Faculty extends User {
         this(DEFAULT_ID, DEFAULT_PASSWORD, DEFAULT_FIRST_NAME,
                 DEFAULT_LAST_NAME, DEFAULT_EMAIL_ADDRESS,
                 Date.from(Instant.now()), Date.from(Instant.now()),
-                DEFAULT_ENABLED_STATUS, DEFAULT_TYPE, DEFAULT_SCHOOL_CODE,
+                DEFAULT_TYPE, DEFAULT_ENABLED_STATUS, DEFAULT_SCHOOL_CODE,
                 DEFAULT_SCHOOL_DESCRIPTION, DEFAULT_OFFICE,
                 DEFAULT_PHONE_EXTENSION);
     }
