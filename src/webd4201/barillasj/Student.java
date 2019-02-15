@@ -5,6 +5,11 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.Vector;
 
+import webd4201.barillasj.db.StudentDA;
+import webd4201.barillasj.webexceptions.DuplicateException;
+import webd4201.barillasj.webexceptions.InvalidUserDataException;
+import webd4201.barillasj.webexceptions.NotFoundException;
+
 /**
  * A User type to represent the Student.
  *

@@ -1,4 +1,4 @@
-package webd4201.barillasj;
+package webd4201.barillasj.webexceptions;
 
 /**
  * Raised when a record is not found within the system's database.

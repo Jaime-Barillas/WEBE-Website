@@ -5,6 +5,11 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.Locale;
 
+import webd4201.barillasj.webexceptions.InvalidIdException;
+import webd4201.barillasj.webexceptions.InvalidNameException;
+import webd4201.barillasj.webexceptions.InvalidPasswordException;
+import webd4201.barillasj.webexceptions.InvalidUserDataException;
+
 /**
  * Holds the base information for each user.
  *

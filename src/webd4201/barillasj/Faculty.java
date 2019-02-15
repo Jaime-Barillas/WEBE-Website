@@ -3,6 +3,8 @@ package webd4201.barillasj;
 import java.time.Instant;
 import java.util.Date;
 
+import webd4201.barillasj.webexceptions.InvalidUserDataException;
+
 /**
  * A User type to represent college faculty.
  *
@@ -164,8 +166,7 @@ public class Faculty extends User {
     /**
      * Construct a Faculty using default values.
      *
-     * @throws InvalidIdException
-     * @throws InvalidPasswordException
+     * @throws InvalidUserDataException
      */
     public Faculty() throws InvalidUserDataException {
         this(DEFAULT_ID, DEFAULT_PASSWORD, DEFAULT_FIRST_NAME,

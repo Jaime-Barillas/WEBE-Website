@@ -1,6 +1,12 @@
 package webd4201.barillasj;
 
 import java.sql.Connection;
+
+import webd4201.barillasj.db.DatabaseConnect;
+import webd4201.barillasj.webexceptions.DuplicateException;
+import webd4201.barillasj.webexceptions.NotFoundException;
+import webd4201.barillasj.webexceptions.InvalidUserDataException;
+
 /**
  * Main method to test the Student JDBC methods
  *

@@ -1,4 +1,4 @@
-package webd4201.barillasj;
+package webd4201.barillasj.webexceptions;
 
 /**
  * Raised when there is an attempt insert a duplicate record.

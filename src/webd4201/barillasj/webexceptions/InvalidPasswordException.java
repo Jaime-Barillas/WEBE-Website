@@ -1,4 +1,4 @@
-package webd4201.barillasj;
+package webd4201.barillasj.webexceptions;
 
 /**
  * An Exception raised when an invalid password is encountered.

@@ -1,4 +1,4 @@
-package webd4201.barillasj;
+package webd4201.barillasj.db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

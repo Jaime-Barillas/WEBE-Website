@@ -1,4 +1,4 @@
-package webd4201.barillasj;
+package webd4201.barillasj.db;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -8,7 +8,14 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Vector;
 
+import webd4201.barillasj.Mark;
+import webd4201.barillasj.Student;
+import webd4201.barillasj.webexceptions.DuplicateException;
+import webd4201.barillasj.webexceptions.InvalidUserDataException;
+import webd4201.barillasj.webexceptions.NotFoundException;
+
 /**
+ * Provides database access for the Student class.
  *
  * @author Jaime Barillas
  * @version 0.1.0 (2019/01/21)
