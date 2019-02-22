@@ -1,5 +1,6 @@
 package webd4201.barillasj.db;
 
+import java.security.MessageDigest;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -65,6 +66,11 @@ public class StudentDA {
      * constraint placed on the student.
      */
     static PreparedStatement sqlDeleteUser;
+    
+    /**
+     * SQL statement to authenticate and retrieve a Student from the database.
+     */
+    static PreparedStatement sqlAuthenticateStudent;
     
     /* The following variables temporarily hold the values of a student for
      * easier access with the below methods.
@@ -136,6 +142,15 @@ public class StudentDA {
 
             sqlDeleteUser = dbConnection.prepareStatement(
                     "DELETE FROM users WHERE id = ?;"
+            );
+            
+            sqlAuthenticateStudent = dbConnection.prepareStatement(
+                    "SELECT users.id, password, firstName, lastName, "
+                            + "emailAddress, lastAccess, enrollDate, type, "
+                            + "enabled, programCode, programDescription, year "
+                            + "    FROM users INNER JOIN students"
+                            + "    ON users.id = students.id WHERE users.id = ? and"
+                            + "    password = ENCODE(DIGEST(?, 'sha1'), 'hex');"
             );
         } catch (SQLException ex) {
             System.err.println("Could not create prepared statements!\nError: "
@@ -383,5 +398,54 @@ public class StudentDA {
         }
         
         return rowsDeleted;
+    }
+
+    /**
+     * Authenticates a student with the given id and password. If such a student
+     * exists, then the corresponding Student is returned.
+     *
+     * @param studentId       The id of the student to authenticate.
+     * @param studentPassword The student's password.
+     * @return The authenticated Student.
+     * @throws NotFoundException If the student id + password combo is incorrect.
+     */
+    public static Student authenticate(long studentId, String studentPassword)
+            throws NotFoundException {
+        try {
+            sqlAuthenticateStudent.setLong(1, studentId);
+            sqlAuthenticateStudent.setString(2, studentPassword);
+            ResultSet result = sqlAuthenticateStudent.executeQuery();
+            
+            if (result.next()) {
+                id = result.getLong("id");
+                password = result.getString("password");
+                firstName = result.getString("firstName");
+                lastName = result.getString("lastName");
+                emailAddress = result.getString("emailAddress");
+                lastAccess = result.getDate("lastAccess");
+                enrollDate = result.getDate("enrollDate");
+                enabled = result.getBoolean("enabled");
+                type = result.getString("type").charAt(0);
+                programCode = result.getString("programCode");
+                programDescription = result.getString("programDescription");
+                year = result.getInt("year");
+                
+                // Create the student
+                student = new Student(id, password, firstName, lastName,
+                        emailAddress, lastAccess, enrollDate, type, enabled,
+                        programCode, programDescription, year);
+            } else {
+                throw new NotFoundException("Could not find a student with the "
+                        + "provided id and password combination!");
+            }
+        } catch (SQLException ex) {
+            System.err.println("Could not authenticate the student!\nError: "
+                    + ex.getMessage());
+        } catch (InvalidUserDataException ex) {
+            System.err.println("Database record for student " + id
+                    + " has invalid data: " + ex.getMessage());
+        }
+        
+        return student;
     }
 }

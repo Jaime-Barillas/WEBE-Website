@@ -127,6 +127,20 @@ public class Lab1Tester {
                  *
                  */
                 
+                try {
+                    System.out.println("Testing Authenticate Method!!!");
+                    dbStudent = Student.authenticate(100505421, "wrongPass");
+                } catch (NotFoundException ex) {
+                    System.out.println(ex.getMessage());
+                }
+                try {
+                    System.out.println("Testing Authenticate Method!!!");
+                    dbStudent = Student.authenticate(100505421, "laserkl");
+                    dbStudent.displayToConsole();
+                } catch (NotFoundException ex) {
+                    System.out.println(ex.getMessage());
+                }
+                
             } catch (Exception e) {   //catch for database initialize/connect try
                 System.out.println(e.toString());
             } finally { // close the database resources, if possible            

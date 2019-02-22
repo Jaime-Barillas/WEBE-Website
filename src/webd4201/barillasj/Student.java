@@ -293,6 +293,20 @@ public class Student extends User {
     }
     
     /**
+     * Authenticates a student with the given id and password. If such a student
+     * exists, then the corresponding Student is returned.
+     *
+     * @param studentId       The id of the student to authenticate.
+     * @param studentPassword The student's password.
+     * @return The authenticated Student.
+     * @throws NotFoundException If the student id + password combo is incorrect.
+     */
+    public static Student authenticate(long studentId, String studentPassword)
+            throws NotFoundException {
+        return StudentDA.authenticate(studentId, studentPassword);
+    }
+    
+    /**
      * The human friendly name for this User type.
      *
      * @return
