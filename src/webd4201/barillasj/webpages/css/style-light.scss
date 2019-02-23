@@ -1,0 +1,99 @@
+/* File: style-light.scss
+ * Author: Jaime Barillas
+ * Created: 2018-12-21
+ * 
+ * Last Modified By: Jaime Barillas
+ * Last Modified: 2018-12-21
+ *
+ * Layout styles are done with Flexbox.
+ * Quick flexbox reference: https://css-tricks.com/snippets/css/a-guide-to-flexbox/ by Chris Coyier
+ *
+ * Note: Consider using a reset style: https://meyerweb.com/eric/tools/css/reset/
+ */
+
+@import "vars";
+@import "layout";
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    min-width: 360px;
+    max-width: 1280px;
+    
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    line-height: 1.4;
+    
+    font-family: $serif-fonts;
+    font-size: 14pt;
+    
+    @media screen and (max-resolution: 127dpi) {
+        font-size: 16pt;
+    }
+}
+
+q {
+    font-style: italic;
+}
+
+hr {
+    margin: 0rem 0.5rem;
+    
+    border-style: dashed;
+    color: $accent-color;
+}
+
+.center-text {
+    text-align: center;
+}
+
+.auto-margins {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+// Add spacing for image brand.
+header img {
+    padding-right: 1rem;
+}
+
+a {
+    color: black;
+    
+    &:visited {
+        color: $tertiary-color;
+    }
+    &:hover {
+        color: $primary-light-color;
+    }
+    &:active {
+        color: $accent-dark-color;
+    }
+}
+
+a.nav-link {
+    display: inline-block;
+    
+    padding: 0.25rem 0.5rem;
+    
+    color: black;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    text-align: center;
+    
+    &:visited {
+        color: $tertiary-color;
+    }
+    &:hover {
+        //color: $primary-light-color;
+        background-color: $accent-color;
+    }
+    &:active {
+        color: $secondary-light-color;
+        background-color: $accent-light-color;
+    }
+}

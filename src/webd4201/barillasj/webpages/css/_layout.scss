@@ -1,0 +1,86 @@
+// File: _layout.css
+// Author: Jaime Barillas
+// Created: 2018-12-21
+// Desc: Flexbox based layout classes.
+//
+// Last Modified By: Jaime Barillas
+// Last Modified: 2018-12-21
+//
+// Quick flexbox reference: https://css-tricks.com/snippets/css/a-guide-to-flexbox/ by Chris Coyier
+//
+
+/*======== Layout Styles ========*/
+
+@mixin flex { display: flex; }
+
+.row-wrap {
+    @include flex;
+    flex-flow: row wrap;
+}
+.row-nwrap {
+    @include flex;
+    flex-flow: row nowrap;
+}
+.col-wrap {
+    @include flex;
+    flex-flow: column wrap;
+}
+.col-nwrap {
+    @include flex;
+    flex-flow: column nowrap;
+}
+
+.justify {
+    &-start   { justify-content: flex-start; }
+    &-center  { justify-content: center; }
+    &-end     { justify-content: flex-end; }
+    &-between { justify-content: space-between; }
+    &-around  { justify-content: space-around; }
+    &-even    { justify-content: space-even; }
+}
+
+.item-valign {
+    &-start    { align-items: flex-start; }
+    &-center   { align-items: center; }
+    &-end      { align-items: flex-end; }
+    &-stretch  { align-items: stretch; }
+    &-baseline { align-items: baseline; }
+}
+
+.content-valign {
+    &-start   { align-content: flex-start; }
+    &-center  { align-content: center; }
+    &-end     { align-content: flex-end; }
+    &-stretch { align-content: stretch; }
+    &-between { align-content: space-between; }
+    &-around  { align-content: space-around; }
+}
+
+/*======== Column Styles ========*/
+
+.self-valign {
+    &-start    { align-self: flex-start; }
+    &-center   { align-self: center; }
+    &-end      { align-self: flex-end; }
+    &-stretch  { align-self: stretch; }
+    &-baseline { align-self: baseline; }
+}
+
+/* Note flex-grow defaults to 0, flex-shrink defaults to 1 */
+.fixed-col {
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+.shrink  { flex-shrink: 1; }
+.nshrink { flex-shrink: 0; }
+.grow    { flex-grow: 1; }
+.ngrow   { flex-grow: 0; }
+
+.width-auto { flex-basis: auto; }
+@for $i from 1 through 10 {
+    .width-#{$i} { flex-basis: 100% / $i; }
+}
+
+/*======== End Column Styles ========*/
+
+/*======== End Layout Styles ========*/

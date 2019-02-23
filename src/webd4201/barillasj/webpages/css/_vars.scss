@@ -1,0 +1,138 @@
+// File: _vars.css
+// Author: Jaime Barillas
+// Created: 2018-12-21
+// Desc: Base variables for the main style.
+//
+// Last Modified By: Jaime Barillas
+// Last Modified: 2018-12-21
+
+// Font stack
+$serif-fonts: Georgia, serif;
+$sans-serif-fonts: Verdana, Geneva, sans-serif;
+$monospace-fonts: "Courier New", Courier, monospace;
+
+// Color scheme - https://coolors.co/79b791-abd1b5-edf4ed-51291e-301014
+$light-color: #edf4ed; // Nice off white
+$dark-color: #2b3447;
+
+// Caput Mortum (Deep Red) // Asperagus green
+$primary-color: #51291e; //#7ea16b;
+$primary-light-color: #704f46; //#8fc4ab;
+$primary-dark-color: #3b1e16; //#596f62;
+
+// Dark Sienna (Dark Red) // Grey
+$secondary-color: #301014; //#3e4657;
+$secondary-light-color: #553b3e; //#617193;
+$secondary-dark-color: #230c0f; //#2d3954;
+
+// Dark Sea Green // Deep Red
+$tertiary-color: #79b791; //#8c595d;
+$tertiary-light-color: #9dcaaf; //#d1858c;
+$tertiary-dark-color: #59866a; //#70161e;
+
+// Turquoise Green // Pastel purple
+$accent-color: #abd1b5; //#9067c6;
+$accent-light-color: #c1ddc9; //#ba8df4;
+$accent-dark-color: #7d9984; //#6d36b5;
+
+// Warning yellow
+$warning-color: #d1ba49;
+$warning-light-color: #f2dd6e;
+$warning-dark-color: #a08708;
+
+// Info blue
+$info-color: #287dcc;
+$info-light-color: #54aaf9;
+$info-dark-color: #145c9e;
+
+// Danger red
+$danger-color: #a40e4c;
+$danger-light-color: #d8025b;
+$danger-dark-color: #560024;
+
+// Classes for each of the vars
+.serif      { font-family: $serif-fonts; }
+.sans-serif { font-family: $sans-serif-fonts; }
+.monospace  { font-family: $monospace-fonts; }
+
+.fg {
+    &-light { color: $light-color; }
+    &-dark  { color: black; } // The dark-color var is for the background only.
+    
+    &-primary {
+        color: $primary-color;
+        &-light { color: $primary-light-color; }
+        &-dark  { color: $primary-dark-color; }
+    }
+    &-secondary {
+        color: $secondary-color;
+        &-light { color: $secondary-light-color; }
+        &-dark  { color: $secondary-dark-color; }
+    }
+    &-tertiary {
+        color: $tertiary-color;
+        &-light { color: $tertiary-light-color; }
+        &-dark  { color: $tertiary-dark-color; }
+    }
+    &-accent {
+        color: $accent-color;
+        &-light { color: $accent-light-color; }
+        &-dark  { color: $accent-dark-color; }
+    }
+    &-warning {
+        color: $warning-color;
+        &-light { color: $warning-light-color; }
+        &-dark  { color: $warning-dark-color; }
+    }
+    &-info {
+        color: $info-color;
+        &-light { color: $info-light-color; }
+        &-dark  { color: $info-dark-color; }
+    }
+    &-danger {
+        color: $danger-color;
+        &-light { color: $danger-light-color; }
+        &-dark  { color: $danger-dark-color; }
+    }
+}
+
+.bg {
+    &-light { background-color: $light-color; }
+    &-dark  { background-color: $dark-color; } // The dark-color var is for the background only.
+    
+    &-primary {
+        background-color: $primary-color;
+        &-light { background-color: $primary-light-color; }
+        &-dark  { background-color: $primary-dark-color; }
+    }
+    &-secondary {
+        background-color: $secondary-color;
+        &-light { background-color: $secondary-light-color; }
+        &-dark  { background-color: $secondary-dark-color; }
+    }
+    &-tertiary {
+        background-color: $tertiary-color;
+        &-light { background-color: $tertiary-light-color; }
+        &-dark  { background-color: $tertiary-dark-color; }
+    }
+    &-accent {
+        background-color: $accent-color;
+        &-light { background-color: $accent-light-color; }
+        &-dark  { background-color: $accent-dark-color; }
+    }
+    &-warning {
+        background-color: $warning-color;
+        &-light { background-color: $warning-light-color; }
+        &-dark  { background-color: $warning-dark-color; }
+    }
+    &-info {
+        background-color: $info-color;
+        &-light { background-color: $info-light-color; }
+        &-dark  { background-color: $info-dark-color; }
+    }
+    &-danger {
+        background-color: $danger-color;
+        &-light { background-color: $danger-light-color; }
+        &-dark  { background-color: $danger-dark-color; }
+    }
+}

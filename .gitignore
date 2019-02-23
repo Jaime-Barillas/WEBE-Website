@@ -3,3 +3,6 @@ build/
 dist/
 
 nbproject/private/
+
+# Ignore any images
+src/**/images/
