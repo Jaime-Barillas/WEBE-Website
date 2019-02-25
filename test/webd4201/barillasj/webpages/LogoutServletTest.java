@@ -5,9 +5,6 @@
  */
 package webd4201.barillasj.webpages;
 
-import java.io.IOException;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpSession;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -20,10 +17,10 @@ import webd4201.barillasj.db.StudentDA;
  *
  * @author jaime
  */
-public class LoginServletTest {
+public class LogoutServletTest {
     Req req;
     Res res;
-    LoginServlet login;
+    LogoutServlet logout;
     
     /**
      * Connect to database for tests.
@@ -49,23 +46,22 @@ public class LoginServletTest {
     public void prepTests() {
         req = new Req();
         res = new Res();
-        login = new LoginServlet();
+        logout = new LogoutServlet();
     }
-    
+
     /**
-     * Test login logic.
+     * Test logout logic.
      */
     @Test
-    public void testDoPost() {
-        System.out.println("Testing valid login");
+    public void testDoGet() {
+        System.out.println("Testing logout");
         
-        // Setup request parameters
-        req.setParameter("studentId", "100505421");
-        req.setParameter("studentPassword", "laserkl");
+        // Setup an account to log out.
+        req.getSession().setAttribute("user", "Some Student");
         
-        // Executing log-in logic.
+        // Executing log-out logic.
         try {
-            login.doPost(req, res);
+            logout.doGet(req, res);
         } catch (Exception ex) {
             String msg = "";
             for (StackTraceElement el : ex.getStackTrace()) {
@@ -75,12 +71,9 @@ public class LoginServletTest {
             fail("Error occured: " + ex.getMessage() + msg);
         }
         
-        // Check results
-        HttpSession session = req.getSession();
-        String redirect = res.get("redirect");
-        
-        assertNotNull(session.getAttribute("user"));
-        assertEquals("./dashboard.jsp", redirect);
+        // Check that LogoutServlet removed user and redirected to login.jsp.
+        assertNull(req.getSession().getAttribute("user"));
+        assertEquals("./login.jsp", res.get("redirect"));
     }
     
 }
