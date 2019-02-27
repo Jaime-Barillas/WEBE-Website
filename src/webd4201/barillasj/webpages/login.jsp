@@ -3,7 +3,15 @@
 
 <%@ include file = "./header.jsp" %>
 
-<h3 class="fg-danger"> <%= session.getAttribute("loginError") %> </h3>
+<h3 class="fg-danger">
+  <%
+    Object loginError = session.getAttribute("loginError");
+    if (loginError != null) {
+      out.println(loginError);
+      session.removeAttribute("loginError");
+    }
+  %>
+</h3>
 <form method="post" action="./Login">
   <label for="studentId">Login Id:</label>
   <input type="text" id="studentId" name="studentId" value=""/>
