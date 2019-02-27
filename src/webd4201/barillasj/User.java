@@ -236,7 +236,7 @@ public abstract class User implements CollegeInterface {
      * @return (String) The user's first and last name.
      */
     public String getFullName() {
-        return this.getFirstName() + this.getLastName();
+        return this.getFirstName() + " " + this.getLastName();
     }
 
     /**
