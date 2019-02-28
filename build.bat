@@ -1,7 +1,7 @@
 @ECHO OFF
 SETLOCAL
 rem TODO: Add servlet classes to WEB-INF\web.xml file?
-SET "tomcatAppDir=C:\Users\jaime\Documents\DC-Y2-S2\webe\tomcat8\webapps\webd4201.barillasj\"
+SET "tomcatAppDir=C:\Users\jaime\Documents\DC-Y2-S2\webe\tomcat8\webapps\barillasj\"
 SET "tomcatClassDir=%tomcatAppDir%\WEB-INF\classes\webd4201\barillasj\"
 SET "projectDir=C:\Users\jaime\Documents\DC-Y2-S2\webe\website\"
 SET "classFilesDir=%projectDir%build\classes\webd4201\barillasj\"
