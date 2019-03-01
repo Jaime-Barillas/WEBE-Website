@@ -56,9 +56,34 @@ hr {
     margin-right: auto;
 }
 
-// Add spacing for image brand.
-header img {
-    padding-right: 1rem;
+#nav-bar {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    
+    padding: 0 3rem;
+    
+    background-color: $tertiary-dark-color;
+    color: $light-color;
+    font-family: $sans-serif-fonts;
+}
+
+#nav-bar > a > img {
+    height: 60px;
+
+    padding-right: 4rem;
+}
+
+#nav-bar h1 {
+    flex-grow: 1;
+    
+    margin: 0px 0px;
+}
+
+#nav-bar-links {
+    display: flex;
+    flex-flow: row wrap;
+    flex-basis: 100%;
 }
 
 a {
@@ -80,20 +105,16 @@ a.nav-link {
     
     padding: 0.25rem 0.5rem;
     
-    color: black;
+    color: $light-color;
     border-radius: 0.5rem;
     text-decoration: none;
     text-align: center;
     
-    &:visited {
-        color: $tertiary-color;
-    }
     &:hover {
-        //color: $primary-light-color;
+        color: $dark-color;
         background-color: $accent-color;
     }
     &:active {
-        color: $secondary-light-color;
         background-color: $accent-light-color;
     }
 }

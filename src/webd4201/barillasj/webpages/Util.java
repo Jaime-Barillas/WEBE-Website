@@ -117,7 +117,7 @@ public class Util {
      */
     public static String createNavBarLinks(String[] links) {
         // The general template for a navbar link.
-        final String linkTemplate = "<a class=\"nav-link\" href=\"%s\">%s</a>";
+        final String linkTemplate = "<a class=\"nav-link fixed-col width-3\" href=\"%s\">%s</a>";
         String navLinks = "";
         
         for (String link : links) {
