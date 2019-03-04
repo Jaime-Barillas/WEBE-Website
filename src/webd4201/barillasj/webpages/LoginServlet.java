@@ -18,6 +18,16 @@ import webd4201.barillasj.webexceptions.NotFoundException;
  */
 public class LoginServlet extends HttpServlet {
     
+    /**
+     * Log in the user.
+     * If the id + password combo is incorrect, an error message will be
+     * displayed. Upon a successfull login, redirects to the dashboard page.
+     *
+     * @param req Http request provided by the server.
+     * @param res Http response provided by the server.
+     * @throws IOException
+     * @throws ServletException 
+     */
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse res)
             throws IOException, ServletException {

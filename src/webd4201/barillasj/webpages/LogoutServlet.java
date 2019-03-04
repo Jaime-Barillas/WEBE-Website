@@ -14,6 +14,15 @@ import javax.servlet.http.HttpSession;
  * @since 2019-02-25
  */
 public class LogoutServlet extends HttpServlet {
+    
+    /**
+     * Log out the current user from the system.
+     * Redirects to the login page.
+     *
+     * @param req Http request object provided by the server.
+     * @param res Http response object provided by the server.
+     * @throws IOException 
+     */
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse res)
             throws IOException {
