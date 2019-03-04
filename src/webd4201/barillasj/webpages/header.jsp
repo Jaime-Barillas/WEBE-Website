@@ -18,6 +18,8 @@
   <link rel="stylesheet" type="text/css" href="css/style-light.css"/>
 </head>
 <body>
+  <!-- Anchor to the top of the page for a 'scroll to top' link. -->
+  <a name="top"></a>
   <div id="nav-bar">
     <a href="https://durhamcollege.ca/">
       <img src="./images/dc-logo.png" alt="DC Logo"/>

@@ -118,3 +118,10 @@ a.nav-link {
         background-color: $accent-light-color;
     }
 }
+
+#footer {
+    display: flex;
+    flex-flow: row wrap;
+    flex-basis: 100%;
+    justify-content: space-between;
+}
