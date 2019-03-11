@@ -6,3 +6,5 @@ nbproject/private/
 
 # Ignore any images
 src/**/images/
+
+*.exe
