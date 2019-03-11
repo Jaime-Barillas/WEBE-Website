@@ -306,6 +306,10 @@ public class Student extends User {
         return StudentDA.authenticate(studentId, studentPassword);
     }
     
+    public static Student updatePassword(long studentId, String newPassword) {
+        return StudentDA.updatePassword(studentId, newPassword);
+    }
+    
     /**
      * The human friendly name for this User type.
      *

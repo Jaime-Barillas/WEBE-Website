@@ -3,7 +3,7 @@
 <%!
   String[][] linksByUserState = {
     {"login.jsp", "register.jsp"},
-    {"dashboard.jsp", "update.jsp", "Logout"}
+    {"dashboard.jsp", "update.jsp", "update-password.jsp", "Logout"}
   };
 %>
 

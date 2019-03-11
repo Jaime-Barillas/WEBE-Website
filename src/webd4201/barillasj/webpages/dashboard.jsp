@@ -3,7 +3,15 @@
 
 <%@ include file = "./header.jsp" %>
 
-<h2 class="fg-accent-dark"> Hello! </h2>
+<h2 class="fg-accent-dark">
+  <%
+    Object dashboardMsg = session.getAttribute("dashboardMsg");
+      if (dashboardMsg != null) {
+        out.println(dashboardMsg);
+        session.removeAttribute("dashboardMsg");
+      }
+  %>
+</h2>
 <% Student student = (Student)session.getAttribute("user"); %>
 <p>
   Hello <%= student != null ? student.getFullName() : "" %>! <br/>

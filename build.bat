@@ -1,6 +1,6 @@
 @ECHO OFF
 SETLOCAL
-rem TODO: Add servlet classes to WEB-INF\web.xml file?
+
 SET "tomcatAppDir=C:\Users\jaime\Documents\DC-Y2-S2\webe\tomcat8\webapps\barillasj\"
 SET "tomcatClassDir=%tomcatAppDir%\WEB-INF\classes\webd4201\barillasj\"
 SET "projectDir=C:\Users\jaime\Documents\DC-Y2-S2\webe\website\"
@@ -23,5 +23,9 @@ COPY /Y %classFilesDir%webpages\*.jsp %tomcatAppDir% 1>NUL
 ECHO Copying class files in %classFilesDir% and subdirectories to %tomcatClassDir%
 rem Copy all the .class files to the tomcat webapp folder under the WEB-INF\classes\ subfolder
 XCOPY /Y /S /C /Q %classFilesDir%*.class %tomcatClassDir% 1>NUL
+
+ECHO Updating web.xml file
+webbuild.exe "%tomcatAppDir%WEB-INF\\" "webd4201\barillasj" "WEBD4201 BarillasJ" "Website for WEBD4201"
+ECHO Done!
 
 ENDLOCAL

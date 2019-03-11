@@ -72,6 +72,11 @@ public class StudentDA {
      */
     static PreparedStatement sqlAuthenticateStudent;
     
+    /***
+     * SQL statement to update a user's password.
+     */
+    static PreparedStatement sqlUpdatePassword;
+    
     /* The following variables temporarily hold the values of a student for
      * easier access with the below methods.
      */
@@ -151,6 +156,12 @@ public class StudentDA {
                             + "    FROM users INNER JOIN students"
                             + "    ON users.id = students.id WHERE users.id = ? and"
                             + "    password = ENCODE(DIGEST(?, 'sha1'), 'hex');"
+            );
+            
+            sqlUpdatePassword = dbConnection.prepareStatement(
+                    "UPDATE users SET "
+                            + "password = ENCODE(DIGEST(?, 'sha1'), 'hex') "
+                            + "WHERE id = ?;"
             );
         } catch (SQLException ex) {
             System.err.println("Could not create prepared statements!\nError: "
@@ -447,5 +458,38 @@ public class StudentDA {
         }
         
         return student;
+    }
+    
+    public static Student updatePassword(long studentId, String newPassword) {
+        try {
+            sqlUpdatePassword.setString(1, newPassword);
+            sqlUpdatePassword.setLong(2, studentId);
+            
+            ResultSet result = sqlUpdatePassword.executeQuery();
+            if (result.next()) {
+                id = result.getLong("id");
+                password = result.getString("password");
+                firstName = result.getString("firstName");
+                lastName = result.getString("lastName");
+                emailAddress = result.getString("emailAddress");
+                lastAccess = result.getDate("lastAccess");
+                enrollDate = result.getDate("enrollDate");
+                enabled = result.getBoolean("enabled");
+                type = result.getString("type").charAt(0);
+                programCode = result.getString("programCode");
+                programDescription = result.getString("programDescription");
+                year = result.getInt("year");
+                
+                // Create the student
+                student = new Student(id, password, firstName, lastName,
+                        emailAddress, lastAccess, enrollDate, type, enabled,
+                        programCode, programDescription, year);
+                
+                return student;
+            } else {
+                return null;
+            }
+        } catch (Exception ex) {System.err.println(ex.getMessage());}
+        return null;
     }
 }

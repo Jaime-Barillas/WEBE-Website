@@ -33,12 +33,12 @@ public abstract class User implements CollegeInterface {
     /**
      * The minimum length of a password.
      */
-    protected static final byte MINIMUM_PASSWORD_LENGTH = 8;
+    public static final byte MINIMUM_PASSWORD_LENGTH = 8;
     
     /**
      * The maximum length of a password.
      */
-    protected static final byte MAXIMUM_PASSWORD_LENGTH = 20;
+    public static final byte MAXIMUM_PASSWORD_LENGTH = 20;
     
     /**
      * The user's first name. Defaults to John.
