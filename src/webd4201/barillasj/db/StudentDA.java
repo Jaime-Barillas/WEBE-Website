@@ -1,6 +1,5 @@
 package webd4201.barillasj.db;
 
-import java.security.MessageDigest;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -11,6 +10,7 @@ import java.util.Vector;
 
 import webd4201.barillasj.Mark;
 import webd4201.barillasj.Student;
+import webd4201.barillasj.WebLogger;
 import webd4201.barillasj.webexceptions.DuplicateException;
 import webd4201.barillasj.webexceptions.InvalidUserDataException;
 import webd4201.barillasj.webexceptions.NotFoundException;
@@ -164,8 +164,7 @@ public class StudentDA {
                             + "WHERE id = ?;"
             );
         } catch (SQLException ex) {
-            System.err.println("Could not create prepared statements!\nError: "
-                    + ex.getMessage());
+            WebLogger.logError("Could not create prepared statements!", ex);
         }
     }
     
@@ -181,8 +180,7 @@ public class StudentDA {
             sqlUpdateStudent.close();
             sqlDeleteUser.close();
         } catch(SQLException ex) {
-            System.err.println("Could not close prepared statements!\nError: "
-                    + ex.getMessage());
+            WebLogger.logError("Could not close prepared statements!", ex);
         }
     }
     
@@ -243,8 +241,7 @@ public class StudentDA {
                     dbConnection.rollback();
                 }
             } catch(SQLException ex2) {
-                System.err.println("Could not create a new student!\nError: "
-                        + ex2.getMessage());
+                WebLogger.logError("Could not create a new student!", ex2);
             }
         }
         
@@ -292,11 +289,10 @@ public class StudentDA {
                         + " does not exist within the database!");
             }
         } catch(SQLException ex) {
-            System.err.println("Could not query the database!\nError: "
-                    + ex.getMessage());
+            WebLogger.logError("Could not query the database for a student!", ex);
         } catch(InvalidUserDataException ex) {
-            System.err.println("Database record for student " + id
-                    + " has invalid data: " + ex.getMessage());
+            WebLogger.logError("Database record for student " + id
+                    + " has invalid data! ", ex);
         }
         
         return student;
@@ -363,8 +359,7 @@ public class StudentDA {
                     dbConnection.rollback();
                 }
             } catch (SQLException ex) {
-                System.err.println("Could not update student "
-                        + id + "!\nError: " + ex.getMessage());
+                WebLogger.logError("Could not update student " + id + "!", ex);
             }
         } catch (NotFoundException ex) {
             throw new NotFoundException("Student " + id + " cannot be updated, "
@@ -399,9 +394,7 @@ public class StudentDA {
                     dbConnection.rollback();
                 }
             } catch (SQLException ex) {
-                System.err.println("Could not delete student "
-                        + studentToDelete.getId() + "!\nError: "
-                        + ex.getMessage());
+                WebLogger.logError("Could not delete student " + id + "!", ex);
             }
         } catch (NotFoundException ex) {
             throw new NotFoundException("Student " + studentToDelete.getId()
@@ -450,16 +443,16 @@ public class StudentDA {
                         + "provided id and password combination!");
             }
         } catch (SQLException ex) {
-            System.err.println("Could not authenticate the student!\nError: "
-                    + ex.getMessage());
+            WebLogger.logError("Could not authenticate the student!", ex);
         } catch (InvalidUserDataException ex) {
-            System.err.println("Database record for student " + id
-                    + " has invalid data: " + ex.getMessage());
+            WebLogger.logError("Database record for student " + id
+                    + " has invalid data!", ex);
         }
         
         return student;
     }
     
+    //TODO: db.commit / db.rollback
     public static Student updatePassword(long studentId, String newPassword) {
         try {
             sqlUpdatePassword.setString(1, newPassword);
@@ -489,7 +482,11 @@ public class StudentDA {
             } else {
                 return null;
             }
-        } catch (Exception ex) {System.err.println(ex.getMessage());}
+        } catch (SQLException ex) {
+            WebLogger.logError("Could not update student password!", ex);
+        } catch (InvalidUserDataException ex) {
+            WebLogger.logError("The student contains invalid data!", ex);
+        }
         return null;
     }
 }

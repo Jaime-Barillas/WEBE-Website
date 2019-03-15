@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import webd4201.barillasj.WebLogger;
 
 /**
  * Manages a connection to the system's database.
@@ -52,9 +53,7 @@ public class DatabaseConnect {
             dbConnection =  DriverManager.getConnection(URL, USER, PASSWORD);
             dbConnection.setAutoCommit(false);
         } catch (ClassNotFoundException | SQLException ex) {
-            //Logger.getLogger(DatabaseConnect.class.getName())
-            //        .log(Level.SEVERE, null, ex);
-            System.err.println("Could not connect to the database!\nError: " + ex.getMessage());
+            WebLogger.logError("Could not connect to the database!", ex);
         }
         
         return dbConnection;
@@ -67,9 +66,7 @@ public class DatabaseConnect {
         try {
             dbConnection.close();
         } catch (SQLException ex) {
-            //Logger.getLogger(DatabaseConnect.class.getName())
-            //        .log(Level.WARNING, null, ex);
-            System.err.println("Could not connect to the database!\nError: " + ex.getMessage());
+            WebLogger.logError("Could not disconnect from the database!", ex);
         }
     }
 }
