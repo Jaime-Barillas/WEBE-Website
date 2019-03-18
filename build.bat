@@ -1,10 +1,13 @@
 @ECHO OFF
 SETLOCAL
 
-SET "tomcatAppDir=C:\Users\jaime\Documents\DC-Y2-S2\webe\tomcat8\webapps\barillasj\"
-SET "tomcatClassDir=%tomcatAppDir%\WEB-INF\classes\webd4201\barillasj\"
-SET "projectDir=C:\Users\jaime\Documents\DC-Y2-S2\webe\website\"
-SET "classFilesDir=%projectDir%build\classes\webd4201\barillasj\"
+SET "projectPackage=webd4201\barillasj\"
+SET "tomcatDir=C:\Users\jaime\Documents\DC-Y2-S2\webe\tomcat8\"
+SET "websiteName=barillasj\"
+SET "classFilesDir=C:\Users\jaime\Documents\DC-Y2-S2\webe\website\build\classes\webd4201\barillasj\"
+
+SET "tomcatAppDir=%tomcatDir%webapps\%websiteName%"
+SET "tomcatClassDir=%tomcatAppDir%\WEB-INF\classes\%projectPackage%"
 
 ECHO.
 ECHO Compiling css styles in %classFilesDir%webpages\css
@@ -25,6 +28,7 @@ rem Copy all the .class files to the tomcat webapp folder under the WEB-INF\clas
 XCOPY /Y /S /C /Q %classFilesDir%*.class %tomcatClassDir% 1>NUL
 
 ECHO Updating web.xml file
+rem c# program
 webbuild.exe "%tomcatAppDir%WEB-INF\\" "webd4201\barillasj" "WEBD4201 BarillasJ" "Website for WEBD4201"
 ECHO Done!
 
