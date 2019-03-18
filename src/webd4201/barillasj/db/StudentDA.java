@@ -452,13 +452,24 @@ public class StudentDA {
         return student;
     }
     
-    //TODO: db.commit / db.rollback
+    /**
+     * Updates the password for a Student.
+     *
+     * @param studentId (long) The id of the student.
+     * @param newPassword (String) the new password for the student.
+     * @return The student with the new password or null on failure.
+     */
     public static Student updatePassword(long studentId, String newPassword) {
+        student = null;
+        
+        // If the query succeeded then we return a new Student with the
+        // updated password, otherwise we return null.
         try {
             sqlUpdatePassword.setString(1, newPassword);
             sqlUpdatePassword.setLong(2, studentId);
             
             ResultSet result = sqlUpdatePassword.executeQuery();
+            
             if (result.next()) {
                 id = result.getLong("id");
                 password = result.getString("password");
@@ -473,20 +484,23 @@ public class StudentDA {
                 programDescription = result.getString("programDescription");
                 year = result.getInt("year");
                 
-                // Create the student
                 student = new Student(id, password, firstName, lastName,
                         emailAddress, lastAccess, enrollDate, type, enabled,
                         programCode, programDescription, year);
                 
-                return student;
-            } else {
-                return null;
+                // Commit to the changes! Or not...
+                if (student != null) {
+                    dbConnection.commit();
+                } else {
+                    dbConnection.rollback();
+                }
             }
         } catch (SQLException ex) {
             WebLogger.logError("Could not update student password!", ex);
         } catch (InvalidUserDataException ex) {
             WebLogger.logError("The student contains invalid data!", ex);
         }
-        return null;
+        
+        return student;
     }
 }
