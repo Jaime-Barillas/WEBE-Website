@@ -36,7 +36,7 @@ public class UpdatePasswordServlet extends HttpServlet {
         
         if (oldPassword.isEmpty()) {
             session.setAttribute("updatePasswordMsg", "You must enter your old password!");
-            throw new IOException("Test");
+            error = true;
         } else if (newPassword.isEmpty() || confirmPassword.isEmpty()) {
             session.setAttribute("updatePasswordMsg", "You must enter a new password and confirm it!");
             error = true;

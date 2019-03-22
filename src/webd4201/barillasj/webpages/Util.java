@@ -27,7 +27,7 @@ public class Util {
         String parameter = req.getParameter(key);
         
         // If it is null return the default value, otherwise return the parameter.
-        return (parameter == null) ? defaultValue : parameter;
+        return (parameter == null) ? defaultValue : parameter.trim();
     }
     
     /**
