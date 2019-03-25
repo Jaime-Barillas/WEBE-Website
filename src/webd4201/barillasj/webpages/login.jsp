@@ -15,7 +15,7 @@
 <form method="post" action="./Login">
   <label for="studentId">Login Id:</label>
   <input type="text" id="studentId" name="studentId" value=""/>
-  <label for="studentPassword">Password</label>
+  <label for="studentPassword">Password:</label>
   <input type="password" id="studentPassword" name="studentPassword" value=""/>
   <input type="submit" value="Log In"/>
 </form>
