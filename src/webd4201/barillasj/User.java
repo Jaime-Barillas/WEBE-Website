@@ -17,7 +17,7 @@ import webd4201.barillasj.webexceptions.InvalidUserDataException;
  * @version 0.1.0
  * @since 2019-01-11
  */
-public abstract class User implements CollegeInterface {
+public class User implements CollegeInterface {
 
     //-------- Constants --------//
     /**
@@ -448,6 +448,15 @@ public abstract class User implements CollegeInterface {
         return validName;
     }
 
+    /**
+     * Returns the user type as a String.
+     * @return The type of the user.
+     */
+    @Override
+    public String getTypeForDisplay() {
+        return "User";
+    }
+    
     /**
      * Generates a string of the format:
      * <pre>
