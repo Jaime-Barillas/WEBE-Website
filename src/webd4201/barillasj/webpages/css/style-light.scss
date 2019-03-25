@@ -119,6 +119,14 @@ a.nav-link {
     }
 }
 
+form div {
+    padding: 0.5rem 0px;
+}
+
+form div label {
+    padding-left: 0.5rem;
+}
+
 #footer {
     display: flex;
     flex-flow: row wrap;

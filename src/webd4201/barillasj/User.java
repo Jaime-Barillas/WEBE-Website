@@ -4,11 +4,14 @@ import java.text.DateFormat;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Locale;
+import webd4201.barillasj.db.UserDA;
+import webd4201.barillasj.webexceptions.DuplicateException;
 
 import webd4201.barillasj.webexceptions.InvalidIdException;
 import webd4201.barillasj.webexceptions.InvalidNameException;
 import webd4201.barillasj.webexceptions.InvalidPasswordException;
 import webd4201.barillasj.webexceptions.InvalidUserDataException;
+import webd4201.barillasj.webexceptions.NotFoundException;
 
 /**
  * Holds the base information for each user.
@@ -484,5 +487,52 @@ public class User implements CollegeInterface {
      */
     public void dump() {
         System.out.println(this.toString());
+    }
+    
+    /**
+     * Create a new user in the database.
+     *
+     * @param newUser The user to add to the database.
+     * @return true on success, false on failure.
+     *
+     * @throws DuplicateException If another user with the same id exists.
+     */
+    public static boolean create(User newUser) throws DuplicateException {
+        return UserDA.create(newUser);
+    }
+    
+    /**
+     * Retrieve a user with the specified id.
+     *
+     * @param userId The id of the user.
+     * @return The desired user.
+     *
+     * @throws NotFoundException If no user with the id exists.
+     */
+    public static User retrieve(long userId) throws NotFoundException {
+        return UserDA.retrieve(userId);
+    }
+    
+    /**
+     * Update the details for a user in the database.
+     *
+     * @param userToUpdate The user with the updated details.
+     * @return The number of rows updated.
+     *
+     * @throws NotFoundException If no user with the same id is found.
+     */
+    public static int update(User userToUpdate) throws NotFoundException {
+        return UserDA.update(userToUpdate);
+    }
+    
+    /**
+     * Delete a user from the database.
+     *
+     * @param userToDelete The user to delete.
+     * @return The number of affected rows.
+     * @throws NotFoundException If the user is not found within the database.
+     */
+    public static int delete(User userToDelete) throws NotFoundException {
+        return UserDA.delete(userToDelete);
     }
 }

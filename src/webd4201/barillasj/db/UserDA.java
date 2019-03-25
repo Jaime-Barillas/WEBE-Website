@@ -6,23 +6,21 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.Vector;
 
-import webd4201.barillasj.Mark;
-import webd4201.barillasj.Student;
+import webd4201.barillasj.User;
 import webd4201.barillasj.WebLogger;
 import webd4201.barillasj.webexceptions.DuplicateException;
 import webd4201.barillasj.webexceptions.InvalidUserDataException;
 import webd4201.barillasj.webexceptions.NotFoundException;
 
 /**
- * Provides database access for the Student class.
+ * Provides database access for the User class.
  *
  * @author Jaime Barillas
- * @version 0.1.0 (2019/01/21)
+ * @version 0.1.0 (2019/03/25)
  * @since 0.1.0
  */
-public class StudentDA {
+public class UserDA {
     //-------- Variables --------//
     /**
      * Connection to the database.
@@ -31,34 +29,18 @@ public class StudentDA {
     
     /**
      * SQL statement to create a new User within the database.
-     * Adding a student is a two step process:
-     * (1) add the student as a User.
-     * (2) add the student as a student.
      */
     static PreparedStatement sqlCreateUser;
     
     /**
-     * SQL statement to create a new Student within the database.
+     * SQL statement to retrieve a User from the database.
      */
-    static PreparedStatement sqlCreateStudent;
-    
-    /**
-     * SQL statement to retrieve a Student from the database.
-     */
-    static PreparedStatement sqlRetrieveStudent;
+    static PreparedStatement sqlRetrieveUser;
     
     /**
      * SQL statement to update a User within the database.
-     * Updating a student is a two step process:
-     * (1) update the User portion of the info.
-     * (2) update the Student portion of the info.
      */
     static PreparedStatement sqlUpdateUser;
-    
-    /**
-     * SQL statement to update a Student within the database.
-     */
-    static PreparedStatement sqlUpdateStudent;
     
     /**
      * SQL statement to delete a User from the database.
@@ -67,20 +49,10 @@ public class StudentDA {
      */
     static PreparedStatement sqlDeleteUser;
     
-    /**
-     * SQL statement to authenticate and retrieve a Student from the database.
-     */
-    static PreparedStatement sqlAuthenticateStudent;
-    
-    /***
-     * SQL statement to update a user's password.
-     */
-    static PreparedStatement sqlUpdatePassword;
-    
     /* The following variables temporarily hold the values of a student for
      * easier access with the below methods.
      */
-    static Student student;
+    static User user;
     static long id;
     static String password;
     static String firstName;
@@ -90,10 +62,6 @@ public class StudentDA {
     static Date enrollDate;
     static boolean enabled;
     static char type;
-    static String programCode;
-    static String programDescription;
-    static int year;
-    static Vector<Mark> marks;
     
     /**
      * Formats generic java.util.Date to a format accepted by
@@ -116,13 +84,8 @@ public class StudentDA {
                             + "    VALUES (?, ENCODE(DIGEST(?, 'sha1'), 'hex'), "
                             + "    ?, ?, ?, ?, ?, ?, ?);"
             );
-            sqlCreateStudent = dbConnection.prepareCall(
-                    "INSERT INTO students (id, programCode, programDescription, "
-                            + "year) "
-                            + "    VALUES (?, ?, ?, ?);"
-            );
 
-            sqlRetrieveStudent = dbConnection.prepareStatement(
+            sqlRetrieveUser = dbConnection.prepareStatement(
                     "SELECT users.id, password, firstName, lastName, "
                             + "emailAddress, lastAccess, enrollDate, type, "
                             + "enabled, programCode, programDescription, year "
@@ -138,30 +101,9 @@ public class StudentDA {
                             + "enrollDate = ?, type = ?, enabled = ?"
                             + "    WHERE id = ?;"
             );
-            sqlUpdateStudent = dbConnection.prepareStatement(
-                    "UPDATE students SET "
-                            + "id = ?, programCode = ?, programDescription = ?, "
-                            + "year = ?"
-                            + "    WHERE id = ?;"
-            );
 
             sqlDeleteUser = dbConnection.prepareStatement(
                     "DELETE FROM users WHERE id = ?;"
-            );
-            
-            sqlAuthenticateStudent = dbConnection.prepareStatement(
-                    "SELECT users.id, password, firstName, lastName, "
-                            + "emailAddress, lastAccess, enrollDate, type, "
-                            + "enabled, programCode, programDescription, year "
-                            + "    FROM users INNER JOIN students"
-                            + "    ON users.id = students.id WHERE users.id = ? and"
-                            + "    password = ENCODE(DIGEST(?, 'sha1'), 'hex');"
-            );
-            
-            sqlUpdatePassword = dbConnection.prepareStatement(
-                    "UPDATE users SET "
-                            + "password = ENCODE(DIGEST(?, 'sha1'), 'hex') "
-                            + "WHERE id = ?;"
             );
         } catch (SQLException ex) {
             WebLogger.logError("Could not create prepared statements!", ex);
@@ -174,10 +116,8 @@ public class StudentDA {
     public static void terminate() {
         try {
             sqlCreateUser.close();
-            sqlCreateStudent.close();
-            sqlRetrieveStudent.close();
+            sqlRetrieveUser.close();
             sqlUpdateUser.close();
-            sqlUpdateStudent.close();
             sqlDeleteUser.close();
         } catch(SQLException ex) {
             WebLogger.logError("Could not close prepared statements!", ex);
@@ -187,32 +127,29 @@ public class StudentDA {
     /**
      * Creates a new student within the database.
      * 
-     * @param newStudent (Student) The student to create.
-     * @return true if creation of student is successful, false otherwise.
+     * @param newUser (User) The user to create.
+     * @return true if creation of user is successful, false otherwise.
      *
-     * @throws DuplicateException If the student already exists within the
+     * @throws DuplicateException If the user already exists within the
      * database.
      */
-    public static boolean create(Student newStudent) throws DuplicateException {
+    public static boolean create(User newUser) throws DuplicateException {
         boolean success = false;
         
-        id = newStudent.getId();
-        password = newStudent.getPassword();
-        firstName = newStudent.getFirstName();
-        lastName = newStudent.getLastName();
-        emailAddress = newStudent.getEmailAddress();
-        lastAccess = Date.valueOf(SQL_DF.format(newStudent.getLastAccess()));
-        enrollDate = Date.valueOf(SQL_DF.format(newStudent.getEnrollDate()));
-        enabled = newStudent.isEnabled();
-        type = newStudent.getType();
-        programCode = newStudent.getProgramCode();
-        programDescription = newStudent.getProgramDescription();
-        year = newStudent.getYear();
+        id = newUser.getId();
+        password = newUser.getPassword();
+        firstName = newUser.getFirstName();
+        lastName = newUser.getLastName();
+        emailAddress = newUser.getEmailAddress();
+        lastAccess = Date.valueOf(SQL_DF.format(newUser.getLastAccess()));
+        enrollDate = Date.valueOf(SQL_DF.format(newUser.getEnrollDate()));
+        enabled = newUser.isEnabled();
+        type = newUser.getType();
         
         try {
             // Should fail so we can insert a new student.
             retrieve(id);
-            throw new DuplicateException("Could not create a new student with id: "
+            throw new DuplicateException("Could not create a new user with id: "
                     + id + ", one already exists within the database!");
         } catch (NotFoundException ex) {
             try {
@@ -227,19 +164,8 @@ public class StudentDA {
                 sqlCreateUser.setString(8, String.valueOf(type));
                 sqlCreateUser.setBoolean(9, enabled);
                 
-                sqlCreateStudent.setLong(1, id);
-                sqlCreateStudent.setString(2, programCode);
-                sqlCreateStudent.setString(3, programDescription);
-                sqlCreateStudent.setInt(4, year);
-                
                 // Execute the SQL statements.
-                success = (sqlCreateUser.executeUpdate() > 0) &&
-                          (sqlCreateStudent.executeUpdate() > 0);
-                if (success) {
-                    dbConnection.commit();
-                } else {
-                    dbConnection.rollback();
-                }
+                success = (sqlCreateUser.executeUpdate() > 0);
             } catch(SQLException ex2) {
                 WebLogger.logError("Could not create a new student!", ex2);
             }
@@ -249,22 +175,22 @@ public class StudentDA {
     }
     
     /**
-     * Retrieves a student from the database.
+     * Retrieves a User from the database.
      *
-     * @param studentId (long) The id of the student to retrieve.
-     * @return (Student) The requested student.
+     * @param userId (long) The id of the student to retrieve.
+     * @return (User) The requested user.
      *
      * @throws NotFoundException If the student does not exist within the
      * database.
      */
-    public static Student retrieve(long studentId) throws NotFoundException {
+    public static User retrieve(long userId) throws NotFoundException {
         // Clear any previous student.
-        student = null;
+        user = null;
 
         try {
             // Set parameters, execute query.
-            sqlRetrieveStudent.setLong(1, studentId);
-            ResultSet result = sqlRetrieveStudent.executeQuery();
+            sqlRetrieveUser.setLong(1, userId);
+            ResultSet result = sqlRetrieveUser.executeQuery();
             
             if(result.next()) {
                 id = result.getLong("id");
@@ -276,16 +202,12 @@ public class StudentDA {
                 enrollDate = result.getDate("enrollDate");
                 enabled = result.getBoolean("enabled");
                 type = result.getString("type").charAt(0);
-                programCode = result.getString("programCode");
-                programDescription = result.getString("programDescription");
-                year = result.getInt("year");
                 
                 // Create the student
-                student = new Student(id, password, firstName, lastName,
-                        emailAddress, lastAccess, enrollDate, type, enabled,
-                        programCode, programDescription, year);
+                user = new User(id, password, firstName, lastName,
+                        emailAddress, lastAccess, enrollDate, type, enabled);
             } else {
-                throw new NotFoundException("Student " + studentId
+                throw new NotFoundException("Student " + userId
                         + " does not exist within the database!");
             }
         } catch(SQLException ex) {
@@ -295,38 +217,34 @@ public class StudentDA {
                     + " has invalid data! ", ex);
         }
         
-        return student;
+        return user;
     }
     
     /**
-     * Update the student in the database.
+     * Update the User in the database.
      *
-     * @param studentToUpdate (Student) The student to update with the updated
+     * @param userToUpdate (User) The user to update with the updated
      *                        values
      * @return (int) The number of rows updated (per table).
-     * @throws NotFoundException If the student does not exist in the database.
+     * @throws NotFoundException If the user does not exist in the database.
      */
-    public static int update(Student studentToUpdate) throws NotFoundException {
+    public static int update(User userToUpdate) throws NotFoundException {
         int userRowsUpdated = 0;
-        int studentRowsUpdated = 0;
         
         try {
             // Ensure the student exists
-            retrieve(studentToUpdate.getId());
+            retrieve(userToUpdate.getId());
             
             // Grab the new values from the student for easier access below.
-            id = studentToUpdate.getId();
-            password = studentToUpdate.getPassword();
-            firstName = studentToUpdate.getFirstName();
-            lastName = studentToUpdate.getLastName();
-            emailAddress = studentToUpdate.getEmailAddress();
-            lastAccess = Date.valueOf(SQL_DF.format(studentToUpdate.getLastAccess()));
-            enrollDate = Date.valueOf(SQL_DF.format(studentToUpdate.getEnrollDate()));
-            type = studentToUpdate.getType();
-            enabled = studentToUpdate.isEnabled();
-            programCode = studentToUpdate.getProgramCode();
-            programDescription = studentToUpdate.getProgramDescription();
-            year = studentToUpdate.getYear();
+            id = userToUpdate.getId();
+            password = userToUpdate.getPassword();
+            firstName = userToUpdate.getFirstName();
+            lastName = userToUpdate.getLastName();
+            emailAddress = userToUpdate.getEmailAddress();
+            lastAccess = Date.valueOf(SQL_DF.format(userToUpdate.getLastAccess()));
+            enrollDate = Date.valueOf(SQL_DF.format(userToUpdate.getEnrollDate()));
+            type = userToUpdate.getType();
+            enabled = userToUpdate.isEnabled();
             
             try {
                 // Set parameters.
@@ -341,23 +259,8 @@ public class StudentDA {
                 sqlUpdateUser.setBoolean(9, enabled);
                 sqlUpdateUser.setLong(10, id);
                 
-                sqlUpdateStudent.setLong(1, id);
-                sqlUpdateStudent.setString(2, programCode);
-                sqlUpdateStudent.setString(3, programDescription);
-                sqlUpdateStudent.setInt(4, year);
-                sqlUpdateStudent.setLong(5, id);
-                
                 // Execute query.
                 userRowsUpdated = sqlUpdateUser.executeUpdate();
-                studentRowsUpdated = sqlUpdateStudent.executeUpdate();
-                
-                // Updated the same number of rows in both tables means success.
-                if (userRowsUpdated > 0 &&
-                    userRowsUpdated == studentRowsUpdated) {
-                    dbConnection.commit();
-                } else {
-                    dbConnection.rollback();
-                }
             } catch (SQLException ex) {
                 WebLogger.logError("Could not update student " + id + "!", ex);
             }
@@ -370,137 +273,31 @@ public class StudentDA {
     }
     
     /**
-     * Deletes the specified student from the database.
+     * Deletes the specified User from the database.
      *
-     * @param studentToDelete (Student) The student to delete.
+     * @param userToDelete (User) The user to delete.
      * @return (int) Number of rows affected (per table).
-     * @throws NotFoundException If the student does not exist in the database.
+     * @throws NotFoundException If the user does not exist in the database.
      */
-    public static int delete(Student studentToDelete) throws NotFoundException {
+    public static int delete(User userToDelete) throws NotFoundException {
         int rowsDeleted = 0;
         
         try {
             // Ensure student exists.
-            retrieve(studentToDelete.getId());
+            retrieve(userToDelete.getId());
             
             try {
                 // Set parameters, execute query.
                 sqlDeleteUser.setLong(1, id);
                 rowsDeleted = sqlDeleteUser.executeUpdate();
-                
-                if (rowsDeleted > 0) {
-                    dbConnection.commit();
-                } else {
-                    dbConnection.rollback();
-                }
             } catch (SQLException ex) {
                 WebLogger.logError("Could not delete student " + id + "!", ex);
             }
         } catch (NotFoundException ex) {
-            throw new NotFoundException("Student " + studentToDelete.getId()
+            throw new NotFoundException("Student " + userToDelete.getId()
                     + " cannot be deleted, he/she does not exist in the database.");
         }
         
         return rowsDeleted;
-    }
-
-    /**
-     * Authenticates a student with the given id and password. If such a student
-     * exists, then the corresponding Student is returned.
-     *
-     * @param studentId       The id of the student to authenticate.
-     * @param studentPassword The student's password.
-     * @return The authenticated Student.
-     * @throws NotFoundException If the student id + password combo is incorrect.
-     */
-    public static Student authenticate(long studentId, String studentPassword)
-            throws NotFoundException {
-        try {
-            sqlAuthenticateStudent.setLong(1, studentId);
-            sqlAuthenticateStudent.setString(2, studentPassword);
-            ResultSet result = sqlAuthenticateStudent.executeQuery();
-            
-            if (result.next()) {
-                id = result.getLong("id");
-                password = result.getString("password");
-                firstName = result.getString("firstName");
-                lastName = result.getString("lastName");
-                emailAddress = result.getString("emailAddress");
-                lastAccess = result.getDate("lastAccess");
-                enrollDate = result.getDate("enrollDate");
-                enabled = result.getBoolean("enabled");
-                type = result.getString("type").charAt(0);
-                programCode = result.getString("programCode");
-                programDescription = result.getString("programDescription");
-                year = result.getInt("year");
-                
-                // Create the student
-                student = new Student(id, password, firstName, lastName,
-                        emailAddress, lastAccess, enrollDate, type, enabled,
-                        programCode, programDescription, year);
-            } else {
-                throw new NotFoundException("Could not find a student with the "
-                        + "provided id and password combination!");
-            }
-        } catch (SQLException ex) {
-            WebLogger.logError("Could not authenticate the student!", ex);
-        } catch (InvalidUserDataException ex) {
-            WebLogger.logError("Database record for student " + id
-                    + " has invalid data!", ex);
-        }
-        
-        return student;
-    }
-    
-    /**
-     * Updates the password for a Student.
-     *
-     * @param studentId (long) The id of the student.
-     * @param newPassword (String) the new password for the student.
-     * @return The student with the new password or null on failure.
-     */
-    public static Student updatePassword(long studentId, String newPassword) {
-        student = null;
-        
-        // If the query succeeded then we return a new Student with the
-        // updated password, otherwise we return null.
-        try {
-            sqlUpdatePassword.setString(1, newPassword);
-            sqlUpdatePassword.setLong(2, studentId);
-            
-            ResultSet result = sqlUpdatePassword.executeQuery();
-            
-            if (result.next()) {
-                id = result.getLong("id");
-                password = result.getString("password");
-                firstName = result.getString("firstName");
-                lastName = result.getString("lastName");
-                emailAddress = result.getString("emailAddress");
-                lastAccess = result.getDate("lastAccess");
-                enrollDate = result.getDate("enrollDate");
-                enabled = result.getBoolean("enabled");
-                type = result.getString("type").charAt(0);
-                programCode = result.getString("programCode");
-                programDescription = result.getString("programDescription");
-                year = result.getInt("year");
-                
-                student = new Student(id, password, firstName, lastName,
-                        emailAddress, lastAccess, enrollDate, type, enabled,
-                        programCode, programDescription, year);
-                
-                // Commit to the changes! Or not...
-                if (student != null) {
-                    dbConnection.commit();
-                } else {
-                    dbConnection.rollback();
-                }
-            }
-        } catch (SQLException ex) {
-            WebLogger.logError("Could not update student password!", ex);
-        } catch (InvalidUserDataException ex) {
-            WebLogger.logError("The student contains invalid data!", ex);
-        }
-        
-        return student;
     }
 }

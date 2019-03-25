@@ -10,6 +10,7 @@ import java.util.Vector;
 
 import webd4201.barillasj.Mark;
 import webd4201.barillasj.Student;
+import webd4201.barillasj.User;
 import webd4201.barillasj.WebLogger;
 import webd4201.barillasj.webexceptions.DuplicateException;
 import webd4201.barillasj.webexceptions.InvalidUserDataException;
@@ -30,14 +31,6 @@ public class StudentDA {
     static Connection dbConnection;
     
     /**
-     * SQL statement to create a new User within the database.
-     * Adding a student is a two step process:
-     * (1) add the student as a User.
-     * (2) add the student as a student.
-     */
-    static PreparedStatement sqlCreateUser;
-    
-    /**
      * SQL statement to create a new Student within the database.
      */
     static PreparedStatement sqlCreateStudent;
@@ -48,24 +41,9 @@ public class StudentDA {
     static PreparedStatement sqlRetrieveStudent;
     
     /**
-     * SQL statement to update a User within the database.
-     * Updating a student is a two step process:
-     * (1) update the User portion of the info.
-     * (2) update the Student portion of the info.
-     */
-    static PreparedStatement sqlUpdateUser;
-    
-    /**
      * SQL statement to update a Student within the database.
      */
     static PreparedStatement sqlUpdateStudent;
-    
-    /**
-     * SQL statement to delete a User from the database.
-     * This will delete the associated Student through the Cascading Delete
-     * constraint placed on the student.
-     */
-    static PreparedStatement sqlDeleteUser;
     
     /**
      * SQL statement to authenticate and retrieve a Student from the database.
@@ -73,7 +51,7 @@ public class StudentDA {
     static PreparedStatement sqlAuthenticateStudent;
     
     /***
-     * SQL statement to update a user's password.
+     * SQL statement to update a student's password.
      */
     static PreparedStatement sqlUpdatePassword;
     
@@ -109,13 +87,6 @@ public class StudentDA {
         dbConnection = connection;
 
         try {
-            sqlCreateUser = dbConnection.prepareStatement(
-                    "INSERT INTO users (id, password, firstName, lastName, "
-                            + "emailAddress, lastAccess, enrollDate, type, "
-                            + "enabled) "
-                            + "    VALUES (?, ENCODE(DIGEST(?, 'sha1'), 'hex'), "
-                            + "    ?, ?, ?, ?, ?, ?, ?);"
-            );
             sqlCreateStudent = dbConnection.prepareCall(
                     "INSERT INTO students (id, programCode, programDescription, "
                             + "year) "
@@ -130,14 +101,6 @@ public class StudentDA {
                             + "    ON users.id = students.id WHERE users.id = ?;"
             );
 
-            sqlUpdateUser = dbConnection.prepareStatement(
-                    "UPDATE users SET "
-                            + "id = ?, password = "
-                            + "ENCODE(DIGEST(?, 'sha1'), 'hex'), firstName = ?, "
-                            + "lastName = ?, emailAddress = ?, lastAccess = ?, "
-                            + "enrollDate = ?, type = ?, enabled = ?"
-                            + "    WHERE id = ?;"
-            );
             sqlUpdateStudent = dbConnection.prepareStatement(
                     "UPDATE students SET "
                             + "id = ?, programCode = ?, programDescription = ?, "
@@ -145,10 +108,6 @@ public class StudentDA {
                             + "    WHERE id = ?;"
             );
 
-            sqlDeleteUser = dbConnection.prepareStatement(
-                    "DELETE FROM users WHERE id = ?;"
-            );
-            
             sqlAuthenticateStudent = dbConnection.prepareStatement(
                     "SELECT users.id, password, firstName, lastName, "
                             + "emailAddress, lastAccess, enrollDate, type, "
@@ -173,12 +132,11 @@ public class StudentDA {
      */
     public static void terminate() {
         try {
-            sqlCreateUser.close();
             sqlCreateStudent.close();
             sqlRetrieveStudent.close();
-            sqlUpdateUser.close();
             sqlUpdateStudent.close();
-            sqlDeleteUser.close();
+            sqlAuthenticateStudent.close();
+            sqlUpdatePassword.close();
         } catch(SQLException ex) {
             WebLogger.logError("Could not close prepared statements!", ex);
         }
@@ -216,29 +174,16 @@ public class StudentDA {
                     + id + ", one already exists within the database!");
         } catch (NotFoundException ex) {
             try {
-                // Set the parameters.
-                sqlCreateUser.setLong(1, id);
-                sqlCreateUser.setString(2, password);
-                sqlCreateUser.setString(3, firstName);
-                sqlCreateUser.setString(4, lastName);
-                sqlCreateUser.setString(5, emailAddress);
-                sqlCreateUser.setDate(6, lastAccess);
-                sqlCreateUser.setDate(7, enrollDate);
-                sqlCreateUser.setString(8, String.valueOf(type));
-                sqlCreateUser.setBoolean(9, enabled);
+                // Create a user first
+                success = User.create(newStudent);
                 
-                sqlCreateStudent.setLong(1, id);
-                sqlCreateStudent.setString(2, programCode);
-                sqlCreateStudent.setString(3, programDescription);
-                sqlCreateStudent.setInt(4, year);
-                
-                // Execute the SQL statements.
-                success = (sqlCreateUser.executeUpdate() > 0) &&
-                          (sqlCreateStudent.executeUpdate() > 0);
                 if (success) {
-                    dbConnection.commit();
-                } else {
-                    dbConnection.rollback();
+                    sqlCreateStudent.setLong(1, id);
+                    sqlCreateStudent.setString(2, programCode);
+                    sqlCreateStudent.setString(3, programDescription);
+                    sqlCreateStudent.setInt(4, year);
+                    
+                    success = sqlCreateStudent.executeUpdate() > 0;
                 }
             } catch(SQLException ex2) {
                 WebLogger.logError("Could not create a new student!", ex2);
@@ -307,7 +252,6 @@ public class StudentDA {
      * @throws NotFoundException If the student does not exist in the database.
      */
     public static int update(Student studentToUpdate) throws NotFoundException {
-        int userRowsUpdated = 0;
         int studentRowsUpdated = 0;
         
         try {
@@ -329,34 +273,19 @@ public class StudentDA {
             year = studentToUpdate.getYear();
             
             try {
-                // Set parameters.
-                sqlUpdateUser.setLong(1, id);
-                sqlUpdateUser.setString(2, password);
-                sqlUpdateUser.setString(3, firstName);
-                sqlUpdateUser.setString(4, lastName);
-                sqlUpdateUser.setString(5, emailAddress);
-                sqlUpdateUser.setDate(6, lastAccess);
-                sqlUpdateUser.setDate(7, enrollDate);
-                sqlUpdateUser.setString(8, String.valueOf(type));
-                sqlUpdateUser.setBoolean(9, enabled);
-                sqlUpdateUser.setLong(10, id);
+                // Update the user first.
+                studentRowsUpdated = User.update(studentToUpdate);
                 
-                sqlUpdateStudent.setLong(1, id);
-                sqlUpdateStudent.setString(2, programCode);
-                sqlUpdateStudent.setString(3, programDescription);
-                sqlUpdateStudent.setInt(4, year);
-                sqlUpdateStudent.setLong(5, id);
+                if (studentRowsUpdated > 0) {
+                    sqlUpdateStudent.setLong(1, id);
+                    sqlUpdateStudent.setString(2, programCode);
+                    sqlUpdateStudent.setString(3, programDescription);
+                    sqlUpdateStudent.setInt(4, year);
+                    sqlUpdateStudent.setLong(5, id);
                 
-                // Execute query.
-                userRowsUpdated = sqlUpdateUser.executeUpdate();
-                studentRowsUpdated = sqlUpdateStudent.executeUpdate();
-                
-                // Updated the same number of rows in both tables means success.
-                if (userRowsUpdated > 0 &&
-                    userRowsUpdated == studentRowsUpdated) {
-                    dbConnection.commit();
-                } else {
-                    dbConnection.rollback();
+                    // The amount of rows affected is the sum of the user and
+                    // student update.
+                    studentRowsUpdated += sqlUpdateStudent.executeUpdate();
                 }
             } catch (SQLException ex) {
                 WebLogger.logError("Could not update student " + id + "!", ex);
@@ -366,7 +295,7 @@ public class StudentDA {
                     + "he/she does not exist in the database.");
         }
         
-        return userRowsUpdated;
+        return studentRowsUpdated;
     }
     
     /**
@@ -379,27 +308,7 @@ public class StudentDA {
     public static int delete(Student studentToDelete) throws NotFoundException {
         int rowsDeleted = 0;
         
-        try {
-            // Ensure student exists.
-            retrieve(studentToDelete.getId());
-            
-            try {
-                // Set parameters, execute query.
-                sqlDeleteUser.setLong(1, id);
-                rowsDeleted = sqlDeleteUser.executeUpdate();
-                
-                if (rowsDeleted > 0) {
-                    dbConnection.commit();
-                } else {
-                    dbConnection.rollback();
-                }
-            } catch (SQLException ex) {
-                WebLogger.logError("Could not delete student " + id + "!", ex);
-            }
-        } catch (NotFoundException ex) {
-            throw new NotFoundException("Student " + studentToDelete.getId()
-                    + " cannot be deleted, he/she does not exist in the database.");
-        }
+        rowsDeleted = User.delete(studentToDelete);
         
         return rowsDeleted;
     }
