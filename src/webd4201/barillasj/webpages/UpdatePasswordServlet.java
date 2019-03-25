@@ -27,9 +27,9 @@ public class UpdatePasswordServlet extends HttpServlet {
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws
             IOException, ServletException{
-        String oldPassword = Util.getReqParamOrDefault(req, "oldPassword", "");
-        String newPassword = Util.getReqParamOrDefault(req, "newPassword", "");
-        String confirmPassword = Util.getReqParamOrDefault(req, "confirmPassword", "");
+        String oldPassword = Util.getReqParam(req, "oldPassword", "");
+        String newPassword = Util.getReqParam(req, "newPassword", "");
+        String confirmPassword = Util.getReqParam(req, "confirmPassword", "");
         Student student = null;
         HttpSession session = req.getSession();
         boolean error = false; 

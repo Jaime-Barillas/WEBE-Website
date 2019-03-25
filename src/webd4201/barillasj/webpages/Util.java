@@ -1,6 +1,7 @@
 package webd4201.barillasj.webpages;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * Contains various utility methods for use within the jsp files.
@@ -21,7 +22,7 @@ public class Util {
      * @param defaultValue The value to return if the parameter is null.
      * @return (String) The requested parameter.
      */
-    public static String getReqParamOrDefault(HttpServletRequest req,
+    public static String getReqParam(HttpServletRequest req,
             String key, String defaultValue) {
         // Grab the parameter from the HttpServletRequest.
         String parameter = req.getParameter(key);
@@ -38,7 +39,7 @@ public class Util {
      * @param defaultValue The value to return if the parameter is null or invalid.
      * @return (long) The requested parameter.
      */
-    public static long getReqParamOrDefault(HttpServletRequest req,
+    public static long getReqParam(HttpServletRequest req,
             String key, long defaultValue) {
         // Grab the parameter from the HttpServletRequest.
         String parameter = req.getParameter(key);
@@ -56,6 +57,20 @@ public class Util {
         }
         
         return returnValue;
+    }
+    
+    /**
+     * Get the specified attribute from the session or a default value.
+     * @param session The HttpSession to search.
+     * @param key The key of the desired value.
+     * @param defaultValue A default value if the key is not found within the session.
+     * @return The String value from the session.
+     */
+    public static String getSessionAttr(HttpSession session, String key,
+            String defaultValue) {
+        Object attribute = session.getAttribute(key);
+        
+        return (attribute == null) ? defaultValue : attribute.toString().trim();
     }
     
     /**

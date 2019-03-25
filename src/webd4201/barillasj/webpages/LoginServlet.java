@@ -34,8 +34,8 @@ public class LoginServlet extends HttpServlet {
         HttpSession session = req.getSession();
         // Grab the submitted id and password.
         Student student = null;
-        long studentId = Util.getReqParamOrDefault(req, "studentId", -1L);
-        String studentPassword = Util.getReqParamOrDefault(req,
+        long studentId = Util.getReqParam(req, "studentId", -1L);
+        String studentPassword = Util.getReqParam(req,
                 "studentPassword", "");
         
         // Attempt to log in.
