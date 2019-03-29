@@ -313,6 +313,7 @@ public class StudentDA {
         return rowsDeleted;
     }
 
+    // TODO: Seperate user info out into a User.authenticate method.
     /**
      * Authenticates a student with the given id and password. If such a student
      * exists, then the corresponding Student is returned.
@@ -361,6 +362,7 @@ public class StudentDA {
         return student;
     }
     
+    // TODO: Move password update to UserDA.
     /**
      * Updates the password for a Student.
      *

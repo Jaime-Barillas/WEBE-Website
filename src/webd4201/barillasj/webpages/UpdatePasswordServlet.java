@@ -50,7 +50,7 @@ public class UpdatePasswordServlet extends HttpServlet {
                     + " characters long!");
             error = true;
         } else {
-            // Check session for correct password.
+            // Check session for correct password using Student authenticate method.
             student = (Student)session.getAttribute("user");
             try {
                 Student.authenticate(student.getId(), oldPassword);
