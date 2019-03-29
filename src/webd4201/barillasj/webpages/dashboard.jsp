@@ -3,6 +3,12 @@
 
 <%@ include file = "./header.jsp" %>
 
+<%
+  if (session.getAttribute("user") == null) {
+    response.sendRedirect("./login.jsp");
+  }
+%>
+
 <h2 class="fg-accent-dark">
   <%
     Object dashboardMsg = session.getAttribute("dashboardMsg");
