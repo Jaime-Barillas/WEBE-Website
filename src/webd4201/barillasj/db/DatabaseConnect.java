@@ -40,6 +40,14 @@ public class DatabaseConnect {
      * Connection object to the database.
      */
     static Connection dbConnection;
+    
+    /**
+     * Get the db connection object.
+     * @return The db connection object.
+     */
+    public static Connection getDbConnection() {
+        return dbConnection;
+    }
 
     //-------- Methods --------//
     /**
